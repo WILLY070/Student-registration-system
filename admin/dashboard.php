@@ -1,13 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student List | Admin System</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <script src="../assets/js/script.js"></script>
-</head>
-
+<?php
+// require_once '../includes/auth_check.php';
+require_once '../config/database.php';
+?>
 <?php if (isset($_GET['status']) && $_GET['status'] == 'success'): ?>
     <div id="success-alert" style="padding: 15px; background: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 5px; margin-bottom: 20px;">
         ✅ Student registered successfully!
@@ -31,7 +25,31 @@
         }, 3000);
     </script>
 <?php endif; ?>
+<?php
+$search = isset($_GET['search']) ? $_GET['search'] : '';
 
+if (!empty($search)) {
+    $searchTerm = "%$search%";
+    $sql = "SELECT * FROM students 
+            WHERE full_name LIKE '$searchTerm' 
+            OR student_id LIKE '$searchTerm'";
+    $result = mysqli_query($conn, $sql);
+} else {
+    // If no search, show everyone
+    $result = mysqli_query($conn, "SELECT * FROM students JOIN courses ON students.course_id = courses.course_id");
+}
+?>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student List | Admin System</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <script src="../assets/js/script.js"></script>
+</head>
 <body>
     <header><h1>Student Registration System</h1></header>
     <main>
@@ -75,19 +93,40 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Alex</td>
-                            <td>STU2024001</td>
-                            <td>2000</td>
-                            <td>+1234567890</td>
-                            <td>Computer Science</td>
-                            <td>
-                                <a href="edit_student.html" class="btn-edit">&#9998;</a>
-                                <button class="btn-delete" onclick="showDeleteModal()">&#128465;</button>
-                            </td>
-                        </tr>
-                        <!-- <td colspan="6" class="empty-state">No students found. Click "Register New" to add one.</td> -->
-                        </tr>
+                    <?php
+                    if ($result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
+
+                            // Convert course_id to course name
+                            switch ($row['course_id']) {
+                                case 101: $course = "Computer Science"; break;
+                                case 102: $course = "Data Analytics"; break;
+                                case 103: $course = "Information Technology"; break;
+                                case 104: $course = "Cyber Security"; break;
+                                default: $course = "Unknown";
+                            }
+
+                            echo "<tr>
+                                    <td>{$row['full_name']}</td>
+                                    <td>{$row['student_id']}</td>
+                                    <td>{$row['year_of_birth']}</td>
+                                    <td>{$row['phone_number']}</td>
+                                    <td>{$course}</td>
+                                    <td>
+                                        <a class='edit-btn' href='edit_student.php?id={$row['id']}'>
+                                            &#9998;
+                                        </a>
+                                        <a href='../actions/delete_student.php?id={$row['id']}' 
+                                        class='btn-delete' onclick=\"showDeleteModal()\">
+                                        &#128465;
+                                        </a>
+                                    </td>
+                                </tr>";
+                        }
+                    } else {
+                        echo "<tr><td colspan='6' class='empty-state'>No students found. Click \"Register New\" to add one.</td></tr>";
+                    }
+                    ?>
                     </tbody>
                 </table>
             </div>
