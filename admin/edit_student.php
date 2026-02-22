@@ -1,3 +1,15 @@
+<?php
+// require_once '../includes/auth_check.php';
+require_once '../config/database.php';
+
+    $id = $_GET['id'];
+
+    $query = "SELECT * FROM students WHERE id='$id'";
+    $student = mysqli_query($conn, $query);
+    $student = mysqli_fetch_assoc($student);
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,45 +33,47 @@
                 <p>Update student information in the system</p>
             </div>
 
-            <form action="process.php" method="POST">
+            <form action="../action/update_student.php" method="POST">
                 <div class="info-box">
                     <h3>Student Information</h3>
                 </div>
 
-                <div class="form-grid">
+               <div class="form-grid">
+                <input type="hidden" name="internal_id" value="<?php echo $student['id']; ?>">
                     <div class="input-group full-width">
                         <label>Full Name *</label>
-                        <input type="text" name="username" placeholder="e.g., John Smith" required>
+                        <input type="text" name="fullname" value="<?php echo $student['full_name']; ?>" required>
                     </div>
 
                     <div class="input-group">
                         <label>Year of Birth *</label>
-                        <input type="number" name="year_of_birth" id="editYearOfBirth" placeholder="e.g., 2000" required>
+                        <input type="number" name="yob" value="<?php echo $student['year_of_birth']; ?>" placeholder="e.g., 2000" required>
                     </div>
 
                     <div class="input-group">
                         <label>Student ID *</label>
-                        <input type="text" name="student_id" id="editStudentIdInput" placeholder="e.g., STU2024001" required>
+                        <input type="text" name="student_id" id="studentIdInput" value="<?php echo $student['student_id']; ?>" required>
                     </div>
 
                     <div class="input-group">
                         <label>Contact Number *</label>
-                        <input type="tel" name="contact" placeholder="e.g., +1234567890" required>
+                        <input type="tel" name="contact_number" value="<?php echo $student['phone_number']; ?>" required minlength="10" maxlength="11">
                     </div>
 
                     <div class="input-group">
                         <label>Course/Program *</label>
-                        <select name="course" required>
+                        <select name="course_id" required>
                             <option value="" disabled selected>Select a course</option>
-                            <option value="Computer Science">Computer Science</option>
-                            <option value="Information Technology">Information Technology</option>
-                            <option value="Business">Business</option>
+                            <option value="101" <?php echo ($student['course_id'] == 101) ? 'selected' : ''; ?>>Computer Science</option>
+                            <option value="102" <?php echo ($student['course_id'] == 102) ? 'selected' : ''; ?>>Data Analytics</option>
+                            <option value="103" <?php echo ($student['course_id'] == 103) ? 'selected' : ''; ?>>Information Technology</option>
+                            <option value="104" <?php echo ($student['course_id'] == 104) ? 'selected' : ''; ?>>Cyber Security</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="form-actions">
-                    <a href="students.html" class="btn-cancel" style="line-height: 1.5;">Cancel</a>
+                    <a href="../admin/dashboard.php" class="btn-cancel" style="line-height: 1.5;">Cancel</a>
                     <button type="submit" class="btn-primary" id="editStudentBtn">Update Student</button>
                 </div>
             </form>

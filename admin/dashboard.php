@@ -2,19 +2,28 @@
 // require_once '../includes/auth_check.php';
 require_once '../config/database.php';
 ?>
-<?php if (isset($_GET['status']) && $_GET['status'] == 'success'): ?>
+<?php
+$status = $_GET['status'] ?? null;
+$messages = [
+    'success' => '✅ Student registered successfully!',
+    'updated' => '✅ Student updated successfully!'
+];
+
+if (isset($messages[$status])) {
+    $displayMessage = $messages[$status];
+    ?>
     <div id="success-alert" style="padding: 15px; background: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 5px; margin-bottom: 20px;">
-        ✅ Student registered successfully!
+        <?php echo $displayMessage; ?>
     </div>
 
     <script>
-        // 1. Immediately clean the URL so the message doesn't come back on refresh
+        // 1. Clean the URL
         if (typeof window.history.replaceState === 'function') {
             const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
             window.history.replaceState({path: cleanUrl}, '', cleanUrl);
         }
 
-        // 2. Hide the message after 3 seconds
+        // 2. Fade and Remove
         setTimeout(function() {
             const alert = document.getElementById('success-alert');
             if (alert) {
@@ -24,7 +33,10 @@ require_once '../config/database.php';
             }
         }, 3000);
     </script>
-<?php endif; ?>
+    <?php
+}
+?>
+
 <?php
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 
@@ -57,7 +69,7 @@ if (!empty($search)) {
             <div class="table-header-top">
                 <div>
                     <h2>Registered Students</h2>
-                    <p>0 students currently in system</p>
+                    <p><?php echo $result->num_rows; ?> students currently in system</p>
                 </div>
                 <div class="nav-actions">
                     <a href="register_student.php" class="btn-primary">+ Register New</a>

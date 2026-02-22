@@ -122,43 +122,6 @@ function closeLogoutModal() {
 }
 
 // ===== STUDENT REGISTRATION TOAST =====
-// Only run this code if on the registration page
-document.addEventListener('DOMContentLoaded', function() {
-    // Edit student form toast & year validation
-    const editBtn = document.getElementById('editStudentBtn');
-    const editStudentIdInput = document.getElementById('editStudentIdInput');
-    const editForm = editBtn ? editBtn.closest('form') : null;
-    const yearInput = document.getElementById('editYearOfBirth');
-    if (yearInput) {
-        yearInput.addEventListener('input', function() {
-            const currentYear = new Date().getFullYear();
-            if (parseInt(this.value) > currentYear) {
-                this.classList.add('input-error');
-                this.setCustomValidity('Year of birth cannot be in the future.');
-            } else {
-                this.classList.remove('input-error');
-                this.setCustomValidity('');
-            }
-        });
-    }
-    if (editForm) {
-        editForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            setTimeout(() => {
-                const serverResponse = {
-                    success: true,
-                    studentId: editStudentIdInput ? editStudentIdInput.value : 'Unknown'
-                };
-                if (serverResponse.success) {
-                    showToast(`Student ID ${serverResponse.studentId} has been updated`);
-                    setTimeout(() => {
-                        window.location.href = 'students.html';
-                    }, 1500);
-                }
-            }, 2000);
-        });
-    }
-});
 
 // Initialize login form validation if on login page
 const usernameInputInit = document.getElementById('username');
