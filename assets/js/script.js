@@ -121,18 +121,6 @@ function closeLogoutModal() {
     modal.style.display = 'none';
 }
 
-function confirmLogout() {
-    // Filler code for backend developer - Replace this with PHP backend logic
-  
-    
-    console.log('Logging out...');
-    
-    // Placeholder: Simulate logout and redirect
-    
-    window.location.href = 'login.html';
-    
-}
-
 // ===== STUDENT REGISTRATION TOAST =====
 // Only run this code if on the registration page
 document.addEventListener('DOMContentLoaded', function() {

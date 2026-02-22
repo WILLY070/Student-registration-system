@@ -87,13 +87,15 @@
             <span class="modal-close" onclick="closeLogoutModal()">&times;</span>
             <h2>Confirm Logout</h2>
             <p id="logoutMessage">Are you sure you want to log out? You will be redirected to the login page.</p>
-            <div class="modal-actions">
-                <button class="btn-cancel" onclick="closeLogoutModal()">Stay</button>
-                <button class="btn-logout-confirm" onclick="confirmLogout()">Logout</button>
-            </div>
+            
+            <!-- Logout form -->
+            <form action="../logout.php" method="POST" class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closeLogoutModal()">Stay</button>
+                <button type="submit" class="btn-logout-confirm">Logout</button>
+            </form>
         </div>
     </div>
     
     <footer><p>&copy; 2026 Student Management System</p></footer>
 </body>
-</html>ss
+</html>
