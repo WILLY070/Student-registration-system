@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student List | Admin System</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <script src="../assets/js/script.js"></script>
 </head>
 <body>
     <header><h1>Student Registration System</h1></header>
