@@ -2,17 +2,14 @@
 function checkLoginForm(event) {
     const usernameInput = document.getElementById('username');
     const passwordInput = document.getElementById('passwordInput');
-    
+
     if (usernameInput.value.trim() === '' || passwordInput.value.trim() === '') {
-         alert('Please fill in both username and password fields.');
-        
+        alert('Please fill in both username and password fields.');
+        event.preventDefault();
         return false;
     }
-    
-    // Prevent form submission and show error modal
-    event.preventDefault();
-    showErrorModal();
-    return false;
+
+    return true; // allow form submission
 }
 
 
