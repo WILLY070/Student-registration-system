@@ -7,6 +7,31 @@
     <link rel="stylesheet" href="../assets/css/style.css">
     <script src="../assets/js/script.js"></script>
 </head>
+
+<?php if (isset($_GET['status']) && $_GET['status'] == 'success'): ?>
+    <div id="success-alert" style="padding: 15px; background: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 5px; margin-bottom: 20px;">
+        ✅ Student registered successfully!
+    </div>
+
+    <script>
+        // 1. Immediately clean the URL so the message doesn't come back on refresh
+        if (typeof window.history.replaceState === 'function') {
+            const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+            window.history.replaceState({path: cleanUrl}, '', cleanUrl);
+        }
+
+        // 2. Hide the message after 3 seconds
+        setTimeout(function() {
+            const alert = document.getElementById('success-alert');
+            if (alert) {
+                alert.style.transition = "opacity 0.5s ease";
+                alert.style.opacity = "0";
+                setTimeout(() => alert.remove(), 500);
+            }
+        }, 3000);
+    </script>
+<?php endif; ?>
+
 <body>
     <header><h1>Student Registration System</h1></header>
     <main>
@@ -17,7 +42,7 @@
                     <p>0 students currently in system</p>
                 </div>
                 <div class="nav-actions">
-                    <a href="index.html" class="btn-primary">+ Register New</a>
+                    <a href="register_student.php" class="btn-primary">+ Register New</a>
                     <button onclick="showLogoutModal()" class="btn-logout">Logout</button>
                 </div>
             </div>
@@ -28,9 +53,10 @@
                     <input type="date" name="searchYOB" placeholder="Search DOB ..." class="search-input"> 
                     <select name="searchCourse" class="search-input" >
                         <option value="" disabled selected>Search by course</option>
-                        <option value="Computer Science">Computer Science</option>
-                        <option value="Information Technology">Information Technology</option>
-                        <option value="Business">Business</option>
+                            <option value="101">Computer Science</option>
+                            <option value="102">Data Analytics</option>
+                            <option value="103">Information Technology</option>
+                            <option value="104">Cyber Security</option>
                     </select>
                     <button type="search" class="btn-search">&#128269;</button>
 

@@ -124,28 +124,6 @@ function closeLogoutModal() {
 // ===== STUDENT REGISTRATION TOAST =====
 // Only run this code if on the registration page
 document.addEventListener('DOMContentLoaded', function() {
-    // Registration form toast
-    const registerBtn = document.getElementById('registerBtn');
-    const studentIdInput = document.getElementById('studentIdInput');
-    const registrationForm = registerBtn ? registerBtn.closest('form') : null;
-    if (registrationForm) {
-        registrationForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            setTimeout(() => {
-                const serverResponse = {
-                    success: true,
-                    studentId: studentIdInput ? studentIdInput.value : 'Unknown'
-                };
-                if (serverResponse.success) {
-                    showToast(`Student ID ${serverResponse.studentId} has been added`);
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 1500);
-                }
-            }, 2000);
-        });
-    }
-
     // Edit student form toast & year validation
     const editBtn = document.getElementById('editStudentBtn');
     const editStudentIdInput = document.getElementById('editStudentIdInput');
