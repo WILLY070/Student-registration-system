@@ -8,6 +8,15 @@
     <script src="assets/js/script.js"></script>
         
 </head>
+
+<?php if (isset($_GET['error']) && $_GET['error'] === 'invalid_credentials'): ?>
+<script>
+    window.onload = function() {
+        showErrorModal();
+    };
+</script>
+<?php endif; ?>
+
 <body>
     <header><h1>Student Registration System</h1></header>
     <main>
@@ -16,7 +25,7 @@
                 <h2>Admin Login</h2>
                 <p>Access the management dashboard</p>
             </div>
-            <form action="login_process.php" method="POST" onsubmit="return checkLoginForm(event)">
+            <form action="action/login_action.php" method="POST" onsubmit="return checkLoginForm(event)">
                 <div class="input-group">
                     <label>Username</label>
                     <input  id="username" type="text" name="username"  minlength="3">
