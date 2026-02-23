@@ -30,6 +30,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             // 4. Verify Credentials
             if ($admin && password_verify($password, $admin['password'])) {
+                // Handle "Remember Username" Cookie
+                if (!empty($_POST['remember_user'])) {
+                    // Set cookie for 30 days
+                    setcookie("saved_username", $username, [
+                        'expires' => time() + (86400 * 30),
+                        'path' => '/',
+                        'httponly' => true, // Security: prevents JS access
+                        'samesite' => 'Lax'
+                    ]);
+                } else {
+                    // If not checked, delete the cookie by setting it to the past
+                    setcookie("saved_username", "", time() - 3600, "/");
+                }
+
                 $_SESSION['admin_id'] = $admin['id'];
                 $_SESSION['admin_name'] = $admin['username'];
                 
