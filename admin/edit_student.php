@@ -2,11 +2,29 @@
 require_once '../includes/auth_check.php';
 require_once '../config/database.php';
 
+// Check if ID is provided in the URL
+if (isset($_GET['id'])) {
     $id = $_GET['id'];
 
-    $query = "SELECT * FROM students WHERE id='$id'";
-    $student = mysqli_query($conn, $query);
-    $student = mysqli_fetch_assoc($student);
+    // 1. Prepare the query
+    $query = "SELECT * FROM students WHERE id = ?";
+    $stmt = mysqli_prepare($conn, $query);
+
+    if ($stmt) {
+        // 2. Bind the ID
+        mysqli_stmt_bind_param($stmt, "i", $id);
+
+        // 3. Execute
+        mysqli_stmt_execute($stmt);
+
+        // 4. Get the result and fetch the data
+        $result = mysqli_stmt_get_result($stmt);
+        $student = mysqli_fetch_assoc($result);
+
+        // Close statement
+        mysqli_stmt_close($stmt);
+    }
+}
 ?>
 
 <!DOCTYPE html>

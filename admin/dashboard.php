@@ -49,36 +49,53 @@ if (isset($messages[$status])) {
 // Initialize the base query
 $sql = "SELECT * FROM students JOIN courses ON students.course_id = courses.course_id";
 $where_clauses = [];
+$params = [];
+$types = "";
 
 // Check each filter
 if (!empty($_GET['searchName'])) {
-    $name = mysqli_real_escape_string($conn, $_GET['searchName']);
-    $where_clauses[] = "full_name LIKE '%$name%'";
+    $where_clauses[] = "full_name LIKE ?";
+    $params[] = "%" . $_GET['searchName'] . "%";
+    $types .= "s";
 }
 
 if (!empty($_GET['SearchID'])) {
-    $stuID = mysqli_real_escape_string($conn, $_GET['SearchID']);
-    $where_clauses[] = "student_id LIKE '%$stuID%'";
+    $where_clauses[] = "student_id LIKE ?";
+    $params[] = "%" . $_GET['SearchID'] . "%";
+    $types .= "s";
 }
 
 if (!empty($_GET['searchYOB'])) {
-    $yob = (int)$_GET['searchYOB'];
-    $where_clauses[] = "year_of_birth = $yob";
+    $where_clauses[] = "year_of_birth = ?";
+    $params[] = (int)$_GET['searchYOB'];
+    $types .= "i";
 }
 
 if (!empty($_GET['searchCourse'])) {
-    $course = (int)$_GET['searchCourse'];
-    $where_clauses[] = "students.course_id = $course";
+    $where_clauses[] = "students.course_id = ?";
+    $params[] = (int)$_GET['searchCourse'];
+    $types .= "i";
 }
 
-// If there are filters, append them to the SQL
+// Append filters to SQL
 if (count($where_clauses) > 0) {
     $sql .= " WHERE " . implode(' AND ', $where_clauses);
 }
 
-$result = mysqli_query($conn, $sql);
-?>
+$stmt = mysqli_prepare($conn, $sql);
 
+if ($stmt) {
+    // Only bind if there are actual parameters
+    if (!empty($params)) {
+        mysqli_stmt_bind_param($stmt, $types, ...$params);
+    }
+    
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+} else {
+    die("Query Preparation Failed: " . mysqli_error($conn));
+}
+?>
 
 <!DOCTYPE html>
 <html lang="en">
