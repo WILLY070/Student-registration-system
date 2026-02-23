@@ -39,7 +39,15 @@ require_once '../includes/auth_check.php';
 
                     <div class="input-group">
                         <label>Year of Birth *</label>
-                        <input type="number" name="yob" placeholder="e.g., 2000" required>
+                        <input 
+                            type="number" 
+                            name="yob" 
+                            id="yob"
+                            min="<?php echo date('Y') - 100; ?>" 
+                            max="<?php echo date('Y') - 16; ?>" 
+                            required 
+                            placeholder="YYYY"
+                        >
                     </div>
 
                     <div class="input-group">
