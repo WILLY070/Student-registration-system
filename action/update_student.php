@@ -2,24 +2,41 @@
 include("../config/database.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $fullname = mysqli_real_escape_string($conn, $_POST["fullname"]);
-    $yob = mysqli_real_escape_string($conn, $_POST["yob"]);
-    $student_id = mysqli_real_escape_string($conn, $_POST["student_id"]);
-    $phone_number = mysqli_real_escape_string($conn, $_POST["contact_number"]);
-    $course_id = mysqli_real_escape_string($conn, $_POST["course_id"]);
-    $id = mysqli_real_escape_string($conn, $_POST["internal_id"]);
+    // Collect raw data
+    $fullname = $_POST["fullname"];
+    $yob = $_POST["yob"];
+    $student_id = $_POST["student_id"];
+    $phone_number = $_POST["contact_number"];
+    $course_id = $_POST["course_id"];
+    $id = $_POST["internal_id"];
 
+    // 1. Prepare the SQL template with placeholders
     $sql = "UPDATE students 
-            SET full_name='$fullname', student_id='$student_id', phone_number='$phone_number', year_of_birth='$yob', course_id='$course_id' 
-            WHERE id='$id'";
+            SET full_name = ?, student_id = ?, phone_number = ?, year_of_birth = ?, course_id = ? 
+            WHERE id = ?";
 
-    try {
-        if (mysqli_query($conn, $sql)) {
-            header("Location: ../admin/dashboard.php?status=updated");
-            exit(); 
+    $stmt = mysqli_prepare($conn, $sql);
+
+    if ($stmt) {
+        /* 2. Bind variables
+           Order: full_name (s), student_id (s), phone_number (s), yob (i), course_id (i), id (i)
+           Type string: "sssiii"
+        */
+        mysqli_stmt_bind_param($stmt, "sssiii", $fullname, $student_id, $phone_number, $yob, $course_id, $id);
+
+        try {
+            // 3. Execute
+            if (mysqli_stmt_execute($stmt)) {
+                header("Location: ../admin/dashboard.php?status=updated");
+                exit();
+            }
+        } catch (mysqli_sql_exception $e) {
+            echo "Database Error: " . $e->getMessage();
         }
-    } catch (mysqli_sql_exception $e) {
-        echo "Database Error: " . $e->getMessage();
+
+        mysqli_stmt_close($stmt);
+    } else {
+        echo "Statement Preparation Failed: " . mysqli_error($conn);
     }
 }
 
