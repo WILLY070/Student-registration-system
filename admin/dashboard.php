@@ -46,18 +46,37 @@ if (isset($messages[$status])) {
 ?>
 
 <?php
-$search = isset($_GET['search']) ? $_GET['search'] : '';
+// Initialize the base query
+$sql = "SELECT * FROM students JOIN courses ON students.course_id = courses.course_id";
+$where_clauses = [];
 
-if (!empty($search)) {
-    $searchTerm = "%$search%";
-    $sql = "SELECT * FROM students 
-            WHERE full_name LIKE '$searchTerm' 
-            OR student_id LIKE '$searchTerm'";
-    $result = mysqli_query($conn, $sql);
-} else {
-    // If no search, show everyone
-    $result = mysqli_query($conn, "SELECT * FROM students JOIN courses ON students.course_id = courses.course_id");
+// Check each filter
+if (!empty($_GET['searchName'])) {
+    $name = mysqli_real_escape_string($conn, $_GET['searchName']);
+    $where_clauses[] = "full_name LIKE '%$name%'";
 }
+
+if (!empty($_GET['SearchID'])) {
+    $stuID = mysqli_real_escape_string($conn, $_GET['SearchID']);
+    $where_clauses[] = "student_id LIKE '%$stuID%'";
+}
+
+if (!empty($_GET['searchYOB'])) {
+    $yob = (int)$_GET['searchYOB'];
+    $where_clauses[] = "year_of_birth = $yob";
+}
+
+if (!empty($_GET['searchCourse'])) {
+    $course = (int)$_GET['searchCourse'];
+    $where_clauses[] = "students.course_id = $course";
+}
+
+// If there are filters, append them to the SQL
+if (count($where_clauses) > 0) {
+    $sql .= " WHERE " . implode(' AND ', $where_clauses);
+}
+
+$result = mysqli_query($conn, $sql);
 ?>
 
 
@@ -85,10 +104,10 @@ if (!empty($search)) {
                 </div>
             </div>
             <div class="search-section">
-                <form action="" method="get" class="Search-form">
-                    <input type="text" name="searchName" placeholder="Search students..." class="search-input">
-                    <input type="text" name="SearchID" placeholder="Search Student ID..." class="search-input">
-                    <input type="date" name="searchYOB" placeholder="Search DOB ..." class="search-input"> 
+                <form action="" method="GET" class="Search-form">
+                    <input type="text" name="searchName" value="<?php echo $_GET['searchName'] ?? ''; ?>" placeholder="Search students..." class="search-input">
+                    <input type="text" name="SearchID" value="<?php echo $_GET['SearchID'] ?? ''; ?>" placeholder="Search Student ID..." class="search-input">
+                    <input type="number" name="searchYOB" value="<?php echo $_GET['searchYOB'] ?? ''; ?>" placeholder="Search DOB ..." class="search-input"> 
                     <select name="searchCourse" class="search-input" >
                         <option value="" disabled selected>Search by course</option>
                             <option value="101">Computer Science</option>
@@ -96,7 +115,12 @@ if (!empty($search)) {
                             <option value="103">Information Technology</option>
                             <option value="104">Cyber Security</option>
                     </select>
-                    <button type="search" class="btn-search">&#128269;</button>
+                    <button type="submit" class="btn-search">&#128269;</button>
+                    <?php if (!empty($_GET)): ?>
+                        <a href="dashboard.php" class="btn-clear" style="text-decoration: none; color: #666; font-size: 13px; margin-left: 10px;">
+                            ✕ Clear Filters
+                        </a>
+                    <?php endif; ?>
 
                 </form><!-- <input type="text" placeholder="Search students..." class="search-input"> -->
             </div>
