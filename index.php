@@ -28,11 +28,11 @@
             <form action="action/login_action.php" method="POST" onsubmit="return checkLoginForm(event)">
                 <div class="input-group">
                     <label>Username</label>
-                    <input  id="username" type="text" name="username"  minlength="3">
+                    <input  id="username" type="text" name="username"  minlength="3" required>
                 </div>
                 <div class="input-group" style="margin-top:15px;">
                     <label>Password</label>
-                    <input id="passwordInput" type="password" name="password"  minlength="8">
+                    <input id="passwordInput" type="password" name="password"  minlength="8" required>
                 </div>
                 <button type="submit" class="btn-primary"  style="width:100%; margin-top:20px;">Login</button>
             </form>
