@@ -6,6 +6,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $fullname     = trim($_POST["fullname"]);
     $yob          = $_POST["yob"];
     $student_id   = trim($_POST["student_id"]);
+    $pattern = "/^SCT211-(?!0000)\d{4}\/\d{4}$/";
     $phone_number = trim($_POST["contact_number"]);
     $course_id    = $_POST["course_id"];
     $id           = $_POST["internal_id"];
@@ -29,6 +30,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     if (empty($student_id)) {
         $errors[] = "Student ID is required.";
+    }
+    if (!preg_match($pattern, $student_id)) {
+        $errors[] = "Invalid Student ID. The numeric part must be between 0001 and 9999. Format: SCT211-0000/YYYY";
     }
     if (empty($phone_number)) {
         $errors[] = "Phone number is required.";

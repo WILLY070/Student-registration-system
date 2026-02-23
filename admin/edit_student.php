@@ -64,12 +64,28 @@ if (isset($_GET['id'])) {
 
                     <div class="input-group">
                         <label>Year of Birth *</label>
-                        <input type="number" name="yob" value="<?php echo htmlspecialchars($student['year_of_birth']); ?>" placeholder="e.g., 2000" required>
+                        <input 
+                            type="number" 
+                            name="yob" 
+                            id="yob"
+                            min="<?php echo date('Y') - 100; ?>" 
+                            max="<?php echo date('Y') - 16; ?>"
+                            value="<?php echo htmlspecialchars($student['year_of_birth']); ?>" 
+                            required 
+                        >
                     </div>
 
                     <div class="input-group">
                         <label>Student ID *</label>
                         <input type="text" name="student_id" id="studentIdInput" value="<?php echo htmlspecialchars($student['student_id']); ?>" required>
+                        <input 
+                            type="text" 
+                            name="student_id" 
+                            value="<?php echo htmlspecialchars($student['student_id']); ?>" 
+                            pattern="SCT211-(?!0000)\d{4}/\d{4}" 
+                            title="Format: SCT211-0001/YYYY"
+                            required
+                        >
                     </div>
 
                     <div class="input-group">

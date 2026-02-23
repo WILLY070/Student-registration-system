@@ -53,6 +53,15 @@ require_once '../includes/auth_check.php';
                     <div class="input-group">
                         <label>Student ID *</label>
                         <input type="text" name="student_id" id="studentIdInput" placeholder="e.g., STU2024001" required>
+                        <input 
+                            type="text" 
+                            name="student_id"
+                            id="studentIdInput" 
+                            required 
+                            pattern="SCT211-(?!0000)\d{4}/\d{4}" 
+                            title="Format: SCT211-0001/2024 to SCT211-9999/2024. 0000 is not allowed."
+                            placeholder="SCT211-0001/2024"
+                        >
                     </div>
 
                     <div class="input-group">
