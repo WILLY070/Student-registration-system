@@ -40,50 +40,17 @@ window.onclick = function(event) {
 }
 
 // ===== DELETE MODAL FUNCTIONS =====
-function showDeleteModal() {
-    const modal = document.getElementById('deleteModal');
-    modal.style.display = 'block';
+function showDeleteModal(id) {
+    // Put the ID into the hidden input field
+    document.getElementById('deleteStudentId').value = id;
+    // Show the modal
+    document.getElementById('deleteModal').style.display = 'block';
 }
 
 function closeDeleteModal() {
-    const modal = document.getElementById('deleteModal');
-    modal.style.display = 'none';
+    document.getElementById('deleteModal').style.display = 'none';
 }
 
-function confirmDelete() {
-    // Filler code for backend developer - Replace this with PHP backend logic
-    
-    console.log('Deleting student...');
-    
-    // Close the delete modal
-    closeDeleteModal();
-    
-    // Simulate waiting for server confirmation
-    // TODO: Backend developer - Replace this with actual delete logic
-    // Example: Send DELETE request to delete_student.php
-    
-    // Simulating server response delay (2 seconds)
-    setTimeout(() => {
-        // Dummy server confirmation - Replace with actual backend response
-        const serverResponse = {
-            success: true,
-            studentId: 'STU2024001'  // This would come from the actual student being deleted
-        };
-        
-        // If server confirms successful deletion
-        if (serverResponse.success) {
-            // Show toast notification with student ID
-            showToast(`Student ID ${serverResponse.studentId} has been deleted`);
-            
-            // TODO: Backend developer - Add code here to:
-            // 1. Remove the row from the table
-            // 2. Update student count
-            // 3. Refresh the page or student list
-        }
-    }, 2000);  // Wait 2 seconds to simulate server response
-    
-    
-}
 
 // ===== TOAST NOTIFICATION FUNCTIONS =====
 function showToast(message) {

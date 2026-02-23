@@ -9,7 +9,6 @@ require_once '../config/database.php';
     $student = mysqli_fetch_assoc($student);
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,7 +27,7 @@ require_once '../config/database.php';
     <main>
         <section class="form-card" style="max-width: 850px;">
             <div class="form-header">
-                <a href="students.html" style="text-decoration: none; color: var(--dark-blue); font-weight: bold;">← Back</a>
+                <a href="../admin/dashboard.php" style="text-decoration: none; color: var(--dark-blue); font-weight: bold;">← Back</a>
                 <h2 style="margin-top: 15px;">Edit Student information</h2>
                 <p>Update student information in the system</p>
             </div>

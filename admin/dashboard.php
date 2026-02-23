@@ -6,13 +6,21 @@ require_once '../config/database.php';
 $status = $_GET['status'] ?? null;
 $messages = [
     'success' => '✅ Student registered successfully!',
-    'updated' => '✅ Student updated successfully!'
+    'updated' => '✅ Student updated successfully!',
+    'deleted' => '🗑️ Student record deleted successfully!'
 ];
 
 if (isset($messages[$status])) {
     $displayMessage = $messages[$status];
+    
+    // Determine colors based on status
+    $isDeleted = ($status === 'deleted');
+    $bgColor = $isDeleted ? '#f8d7da' : '#d4edda';
+    $textColor = $isDeleted ? '#721c24' : '#155724';
+    $borderColor = $isDeleted ? '#f5c6cb' : '#c3e6cb';
     ?>
-    <div id="success-alert" style="padding: 15px; background: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 5px; margin-bottom: 20px;">
+    
+    <div id="success-alert" style="padding: 15px; background: <?php echo $bgColor; ?>; color: <?php echo $textColor; ?>; border: 1px solid <?php echo $borderColor; ?>; border-radius: 5px; margin-bottom: 20px;">
         <?php echo $displayMessage; ?>
     </div>
 
@@ -128,8 +136,8 @@ if (!empty($search)) {
                                         <a class='edit-btn' href='edit_student.php?id={$row['id']}'>
                                             &#9998;
                                         </a>
-                                        <a href='../actions/delete_student.php?id={$row['id']}' 
-                                        class='btn-delete' onclick=\"showDeleteModal()\">
+                                        <a href='javascript:void(0)' 
+                                        class='btn-delete' onclick=\"showDeleteModal(" . $row['id'] . ")\">
                                         &#128465;
                                         </a>
                                     </td>
@@ -150,11 +158,14 @@ if (!empty($search)) {
         <div class="modal-content">
             <span class="modal-close" onclick="closeDeleteModal()">&times;</span>
             <h2>Delete Student</h2>
-            <p id="deleteMessage">Are you sure you want to delete this student entry? This action cannot be undone.</p>
-            <div class="modal-actions">
-                <button class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
-                <button class="btn-delete-confirm" onclick="confirmDelete()">Delete</button>
-            </div>
+            <p>Are you sure? This action cannot be undone.</p>
+            
+            <form action="../action/delete_student.php" method="POST" class="modal-actions">
+                <input type="hidden" name="id" id="deleteStudentId">
+                
+                <button type="button" class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+                <button type="submit" class="btn-delete-confirm">Delete</button>
+            </form>
         </div>
     </div>
     
