@@ -3,35 +3,47 @@ session_start();
 require_once '../config/database.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST['username'];
+    $username = trim($_POST['username']);
     $password = $_POST['password'];
 
-    // 1. Use a placeholder for the username
-    $query = "SELECT * FROM admins WHERE username = ?";
-    $stmt = mysqli_prepare($conn, $query);
+    $errors = [];
 
-    if ($stmt) {
-        // 2. Bind and execute
-        mysqli_stmt_bind_param($stmt, "s", $username);
-        mysqli_stmt_execute($stmt);
-        
-        // 3. Get the result
-        $result = mysqli_stmt_get_result($stmt);
-        $admin = mysqli_fetch_assoc($result);
+    if (empty($username)) {
+        $errors[] = "Username is required.";
+    }
+    
+    if (empty($password)) {
+        $errors[] = "Password is required.";
+    }
 
-        if ($admin && password_verify($password, $admin['password'])) {
-            // Success! Store admin info in session
-            $_SESSION['admin_id'] = $admin['id'];
-            $_SESSION['admin_name'] = $admin['username'];
+    // 3. Only hit the database if formats are valid
+    if (empty($errors)) {
+        $query = "SELECT * FROM admins WHERE username = ?";
+        $stmt = mysqli_prepare($conn, $query);
+
+        if ($stmt) {
+            mysqli_stmt_bind_param($stmt, "s", $username);
+            mysqli_stmt_execute($stmt);
             
-            header("Location: ../admin/dashboard.php");
-            exit();
-        } else {
-            // Same error for both wrong user and wrong password
-            header("Location: ../index.php?error=invalid_credentials");
-            exit();
-        }
+            $result = mysqli_stmt_get_result($stmt);
+            $admin = mysqli_fetch_assoc($result);
 
-        mysqli_stmt_close($stmt);
+            // 4. Verify Credentials
+            if ($admin && password_verify($password, $admin['password'])) {
+                $_SESSION['admin_id'] = $admin['id'];
+                $_SESSION['admin_name'] = $admin['username'];
+                
+                header("Location: ../admin/dashboard.php");
+                exit();
+            } else {
+                header("Location: ../index.php?error=invalid_credentials");
+                exit();
+            }
+            mysqli_stmt_close($stmt);
+        }
+    } else {
+        // Handle empty field errors
+        header("Location: ../index.php?error=empty_fields");
+        exit();
     }
 }
