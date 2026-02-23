@@ -4,10 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login | Student System</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="assets/js/script.js"></script>
         
 </head>
+
+<?php if (isset($_GET['error']) && $_GET['error'] === 'invalid_credentials'): ?>
+<script>
+    window.onload = function() {
+        showErrorModal();
+    };
+</script>
+<?php endif; ?>
+
 <body>
     <header><h1>Student Registration System</h1></header>
     <main>
@@ -16,14 +25,14 @@
                 <h2>Admin Login</h2>
                 <p>Access the management dashboard</p>
             </div>
-            <form action="login_process.php" method="POST" onsubmit="return checkLoginForm(event)">
+            <form action="action/login_action.php" method="POST" onsubmit="return checkLoginForm(event)">
                 <div class="input-group">
                     <label>Username</label>
-                    <input  id="username" type="text" name="username"  minlength="3">
+                    <input  id="username" type="text" name="username"  minlength="3" required>
                 </div>
                 <div class="input-group" style="margin-top:15px;">
                     <label>Password</label>
-                    <input id="passwordInput" type="password" name="password"  minlength="8">
+                    <input id="passwordInput" type="password" name="password"  minlength="8" required>
                 </div>
                 <button type="submit" class="btn-primary"  style="width:100%; margin-top:20px;">Login</button>
             </form>
