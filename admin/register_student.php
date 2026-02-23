@@ -52,7 +52,6 @@ require_once '../includes/auth_check.php';
 
                     <div class="input-group">
                         <label>Student ID *</label>
-                        <input type="text" name="student_id" id="studentIdInput" placeholder="e.g., STU2024001" required>
                         <input 
                             type="text" 
                             name="student_id"
@@ -66,7 +65,14 @@ require_once '../includes/auth_check.php';
 
                     <div class="input-group">
                         <label>Contact Number *</label>
-                        <input type="tel" name="contact_number" placeholder="e.g., +1234567890" required minlength="10" maxlength="11">
+                        <input 
+                        type="tel" 
+                        name="contact_number" 
+                        required 
+                        pattern="\+254[71]\d{8}" 
+                        title="Format: +254 followed by 7 or 1 and 8 digits (e.g., +254712345678)"
+                        placeholder="+254712345678"
+                        >
                     </div>
 
                     <div class="input-group">

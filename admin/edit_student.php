@@ -77,7 +77,6 @@ if (isset($_GET['id'])) {
 
                     <div class="input-group">
                         <label>Student ID *</label>
-                        <input type="text" name="student_id" id="studentIdInput" value="<?php echo htmlspecialchars($student['student_id']); ?>" required>
                         <input 
                             type="text" 
                             name="student_id" 
@@ -90,7 +89,15 @@ if (isset($_GET['id'])) {
 
                     <div class="input-group">
                         <label>Contact Number *</label>
-                        <input type="tel" name="contact_number" value="<?php echo htmlspecialchars($student['phone_number']); ?>" required minlength="10" maxlength="11">
+                        <input 
+                            type="tel" 
+                            name="contact_number" 
+                            value="<?php echo htmlspecialchars($student['phone_number']); ?>" 
+                            required 
+                            pattern="\+254[71]\d{8}" 
+                            title="Format: +2547XXXXXXXX or +2541XXXXXXXX"
+                            placeholder="+254712345678"
+                        >
                     </div>
 
                     <div class="input-group">

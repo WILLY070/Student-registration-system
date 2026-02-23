@@ -8,6 +8,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $student_id   = trim($_POST["student_id"]);
     $pattern = "/^SCT211-(?!0000)\d{4}\/\d{4}$/";
     $phone_number = trim($_POST["contact_number"]);
+    $phone_pattern = "/^\+254[71]\d{8}$/";
     $course_id    = $_POST["course_id"];
     $id           = $_POST["internal_id"];
 
@@ -32,10 +33,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $errors[] = "Student ID is required.";
     }
     if (!preg_match($pattern, $student_id)) {
-        $errors[] = "Invalid Student ID. The numeric part must be between 0001 and 9999. Format: SCT211-0000/YYYY";
+        $errors[] = "Invalid Student ID. The numeric part must be between 0001 and 9999. Format: SCT211-0001/YYYY";
     }
     if (empty($phone_number)) {
         $errors[] = "Phone number is required.";
+    }
+    if (!preg_match($phone_pattern, $phone_number)) {
+        $errors[] = "Invalid phone number format. Must be in the format +2547XXXXXXXX or +2541XXXXXXXX.";
     }
     if (!filter_var($course_id, FILTER_VALIDATE_INT)) {
         $errors[] = "Invalid course selection.";
