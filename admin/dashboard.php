@@ -168,17 +168,17 @@ if ($stmt) {
                             }
 
                             echo "<tr>
-                                    <td>{$row['full_name']}</td>
-                                    <td>{$row['student_id']}</td>
-                                    <td>{$row['year_of_birth']}</td>
-                                    <td>{$row['phone_number']}</td>
-                                    <td>{$course}</td>
+                                    <td>" . htmlspecialchars($row['full_name']) . "</td>
+                                    <td>" . htmlspecialchars($row['student_id']) . "</td>
+                                    <td>" . htmlspecialchars($row['year_of_birth']) . "</td>
+                                    <td>" . htmlspecialchars($row['phone_number']) . "</td>
+                                    <td>" . htmlspecialchars($course) . "</td>
                                     <td>
-                                        <a class='edit-btn' href='edit_student.php?id={$row['id']}'>
+                                        <a class='edit-btn' href='edit_student.php?id=" . (int)$row['id'] . "'>
                                             &#9998;
                                         </a>
                                         <a href='javascript:void(0)' 
-                                        class='btn-delete' onclick=\"showDeleteModal(" . $row['id'] . ")\">
+                                        class='btn-delete' onclick=\"showDeleteModal(" . (int)$row['id'] . ")\">
                                         &#128465;
                                         </a>
                                     </td>
