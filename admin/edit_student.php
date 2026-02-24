@@ -2,11 +2,29 @@
 require_once '../includes/auth_check.php';
 require_once '../config/database.php';
 
+// Check if ID is provided in the URL
+if (isset($_GET['id'])) {
     $id = $_GET['id'];
 
-    $query = "SELECT * FROM students WHERE id='$id'";
-    $student = mysqli_query($conn, $query);
-    $student = mysqli_fetch_assoc($student);
+    // 1. Prepare the query
+    $query = "SELECT * FROM students WHERE id = ?";
+    $stmt = mysqli_prepare($conn, $query);
+
+    if ($stmt) {
+        // 2. Bind the ID
+        mysqli_stmt_bind_param($stmt, "i", $id);
+
+        // 3. Execute
+        mysqli_stmt_execute($stmt);
+
+        // 4. Get the result and fetch the data
+        $result = mysqli_stmt_get_result($stmt);
+        $student = mysqli_fetch_assoc($result);
+
+        // Close statement
+        mysqli_stmt_close($stmt);
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -38,25 +56,48 @@ require_once '../config/database.php';
                 </div>
 
                <div class="form-grid">
-                <input type="hidden" name="internal_id" value="<?php echo $student['id']; ?>">
+                <input type="hidden" name="internal_id" value="<?php echo htmlspecialchars($student['id']); ?>">
                     <div class="input-group full-width">
                         <label>Full Name *</label>
-                        <input type="text" name="fullname" value="<?php echo $student['full_name']; ?>" required>
+                        <input type="text" name="fullname" value="<?php echo htmlspecialchars($student['full_name']); ?>" required>
                     </div>
 
                     <div class="input-group">
                         <label>Year of Birth *</label>
-                        <input type="number" name="yob" value="<?php echo $student['year_of_birth']; ?>" placeholder="e.g., 2000" required>
+                        <input 
+                            type="number" 
+                            name="yob" 
+                            id="yob"
+                            min="<?php echo date('Y') - 100; ?>" 
+                            max="<?php echo date('Y') - 16; ?>"
+                            value="<?php echo htmlspecialchars($student['year_of_birth']); ?>" 
+                            required 
+                        >
                     </div>
 
                     <div class="input-group">
                         <label>Student ID *</label>
-                        <input type="text" name="student_id" id="studentIdInput" value="<?php echo $student['student_id']; ?>" required>
+                        <input 
+                            type="text" 
+                            name="student_id" 
+                            value="<?php echo htmlspecialchars($student['student_id']); ?>" 
+                            pattern="SCT211-(?!0000)\d{4}/\d{4}" 
+                            title="Format: SCT211-0001/YYYY"
+                            required
+                        >
                     </div>
 
                     <div class="input-group">
                         <label>Contact Number *</label>
-                        <input type="tel" name="contact_number" value="<?php echo $student['phone_number']; ?>" required minlength="10" maxlength="11">
+                        <input 
+                            type="tel" 
+                            name="contact_number" 
+                            value="<?php echo htmlspecialchars($student['phone_number']); ?>" 
+                            required 
+                            pattern="\+254[71]\d{8}" 
+                            title="Format: +2547XXXXXXXX or +2541XXXXXXXX"
+                            placeholder="+254712345678"
+                        >
                     </div>
 
                     <div class="input-group">
