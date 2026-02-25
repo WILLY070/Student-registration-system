@@ -5,15 +5,14 @@ require_once '../config/database.php';
 <?php
 $status = $_GET['status'] ?? null;
 $messages = [
-    'success' => '✅ Student registered successfully!',
-    'updated' => '✅ Student updated successfully!',
-    'deleted' => '🗑️ Student record deleted successfully!'
+    'success' => 'Student registered successfully!',
+    'updated' => 'Student updated successfully!',
+    'deleted' => 'Student record deleted successfully!'
 ];
 
 if (isset($messages[$status])) {
     $displayMessage = $messages[$status];
     
-    // Determine colors based on status
     $isDeleted = ($status === 'deleted');
     $bgColor = $isDeleted ? '#f8d7da' : '#d4edda';
     $textColor = $isDeleted ? '#721c24' : '#155724';
@@ -25,13 +24,11 @@ if (isset($messages[$status])) {
     </div>
 
     <script>
-        // 1. Clean the URL
         if (typeof window.history.replaceState === 'function') {
             const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
             window.history.replaceState({path: cleanUrl}, '', cleanUrl);
         }
 
-        // 2. Fade and Remove
         setTimeout(function() {
             const alert = document.getElementById('success-alert');
             if (alert) {
@@ -46,13 +43,11 @@ if (isset($messages[$status])) {
 ?>
 
 <?php
-// Initialize the base query
 $sql = "SELECT * FROM students JOIN courses ON students.course_id = courses.course_id";
 $where_clauses = [];
 $params = [];
 $types = "";
 
-// Check each filter
 if (!empty($_GET['searchName'])) {
     $where_clauses[] = "full_name LIKE ?";
     $params[] = "%" . $_GET['searchName'] . "%";
@@ -77,7 +72,6 @@ if (!empty($_GET['searchCourse'])) {
     $types .= "i";
 }
 
-// Append filters to SQL
 if (count($where_clauses) > 0) {
     $sql .= " WHERE " . implode(' AND ', $where_clauses);
 }
@@ -85,7 +79,6 @@ if (count($where_clauses) > 0) {
 $stmt = mysqli_prepare($conn, $sql);
 
 if ($stmt) {
-    // Only bind if there are actual parameters
     if (!empty($params)) {
         mysqli_stmt_bind_param($stmt, $types, ...$params);
     }
@@ -122,9 +115,9 @@ if ($stmt) {
             </div>
             <div class="search-section">
                 <form action="" method="GET" class="Search-form">
-                    <input type="text" name="searchName" value="<?php echo $_GET['searchName'] ?? ''; ?>" placeholder="Search students..." class="search-input">
-                    <input type="text" name="SearchID" value="<?php echo $_GET['SearchID'] ?? ''; ?>" placeholder="Search Student ID..." class="search-input">
-                    <input type="number" name="searchYOB" value="<?php echo $_GET['searchYOB'] ?? ''; ?>" placeholder="Search DOB ..." class="search-input"> 
+                    <input type="text" name="searchName" value="<?php echo htmlspecialchars($_GET['searchName'] ?? ''); ?>" placeholder="Search students..." class="search-input">
+                    <input type="text" name="SearchID" value="<?php echo htmlspecialchars($_GET['SearchID'] ?? ''); ?>" placeholder="Search Student ID..." class="search-input">
+                    <input type="number" name="searchYOB" value="<?php echo htmlspecialchars($_GET['searchYOB'] ?? ''); ?>" placeholder="Search YOB ..." class="search-input"> 
                     <select name="searchCourse" class="search-input" >
                         <option value="" disabled selected>Search by course</option>
                             <option value="101">Computer Science</option>
@@ -157,8 +150,6 @@ if ($stmt) {
                     <?php
                     if ($result->num_rows > 0) {
                         while ($row = $result->fetch_assoc()) {
-
-                            // Convert course_id to course name
                             switch ($row['course_id']) {
                                 case 101: $course = "Computer Science"; break;
                                 case 102: $course = "Data Analytics"; break;

@@ -16,7 +16,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $errors[] = "Password is required.";
     }
 
-    // 3. Only hit the database if formats are valid
     if (empty($errors)) {
         $query = "SELECT * FROM admins WHERE username = ?";
         $stmt = mysqli_prepare($conn, $query);
@@ -28,19 +27,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $result = mysqli_stmt_get_result($stmt);
             $admin = mysqli_fetch_assoc($result);
 
-            // 4. Verify Credentials
             if ($admin && password_verify($password, $admin['password'])) {
-                // Handle "Remember Username" Cookie
                 if (!empty($_POST['remember_user'])) {
-                    // Set cookie for 30 days
                     setcookie("saved_username", $username, [
                         'expires' => time() + (86400 * 30),
                         'path' => '/',
-                        'httponly' => true, // Security: prevents JS access
+                        'httponly' => true,
                         'samesite' => 'Lax'
                     ]);
                 } else {
-                    // If not checked, delete the cookie by setting it to the past
                     setcookie("saved_username", "", time() - 3600, "/");
                 }
 
@@ -56,7 +51,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             mysqli_stmt_close($stmt);
         }
     } else {
-        // Handle empty field errors
         header("Location: ../index.php?error=empty_fields");
         exit();
     }

@@ -1,5 +1,4 @@
 <?php
-// Check if the cookie exists to pre-fill the field
 $remembered_name = isset($_COOKIE['saved_username']) ? $_COOKIE['saved_username'] : '';
 ?>
 

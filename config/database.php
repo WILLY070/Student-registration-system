@@ -5,7 +5,6 @@
     $db_name = "studentdb";
     $conn = "";
     
-    // This line tells MySQLi to throw Exceptions instead of just returning false
     mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
     try {

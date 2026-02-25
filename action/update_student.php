@@ -2,26 +2,23 @@
 include("../config/database.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // 1. Collect and trim raw data
-    $fullname     = trim($_POST["fullname"]);
-    $yob          = $_POST["yob"];
-    $student_id   = trim($_POST["student_id"]);
+    $fullname = trim($_POST["fullname"]);
+    $yob = $_POST["yob"];
+    $student_id = trim($_POST["student_id"]);
     $pattern = "/^SCT211-(?!0000)\d{4}\/\d{4}$/";
     $phone_number = trim($_POST["contact_number"]);
     $phone_pattern = "/^\+254[71]\d{8}$/";
-    $course_id    = $_POST["course_id"];
-    $id           = $_POST["internal_id"];
+    $course_id = $_POST["course_id"];
+    $id = $_POST["internal_id"];
 
-    // 2. Validation Stage
     $errors = [];
 
-    // Calculate age limits
     $currentYear = (int)date("Y");
     $minAge = 16;
     $maxAge = 100;
 
-    $maxYear = $currentYear - $minAge; // e.g., 2010
-    $minYear = $currentYear - $maxAge; // e.g., 1926
+    $maxYear = $currentYear - $minAge;
+    $minYear = $currentYear - $maxAge;
 
     if (empty($fullname)) {
         $errors[] = "Full name cannot be empty.";
@@ -48,9 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $errors[] = "Invalid student record ID.";
     }
 
-    // --- Uniqueness Check (Update Logic) ---
     if (empty($errors)) {
-        // Find if this ID or Phone exists, but NOT for this current record
         $check_sql = "SELECT student_id, phone_number FROM students 
                       WHERE (student_id = ? OR phone_number = ?) 
                       AND id != ?";
@@ -74,7 +69,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    // 3. The Gatekeeper: Run SQL only if no errors
     if (empty($errors)) {
         $sql = "UPDATE students 
                 SET full_name = ?, student_id = ?, phone_number = ?, year_of_birth = ?, course_id = ? 
@@ -96,7 +90,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             mysqli_stmt_close($stmt);
         }
     } else {
-        // 4. Show validation errors
         foreach ($errors as $error) {
             echo "<p style='color:red;'>- " . htmlspecialchars($error) . "</p>";
         }
